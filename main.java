@@ -1,77 +1,80 @@
-package hotelReservationSystem;
+package travelPlanner;
 
+import java.time.LocalDate;
 import java.util.Scanner;
-import java.util.List;
 
 public class main 
 {
-    public static void main(String[] args) 
-    {
-        hotel hotel = new hotel();
+ public static void main(String[] args) 
+ {
+     Scanner scanner = new Scanner(System.in);
 
-        // Add some rooms to the hotel
-        hotel.addRoom(new room(1, "Single"));
-        hotel.addRoom(new room(2, "Double"));
-        hotel.addRoom(new room(3, "Suite"));
+     System.out.println("Enter start date (yyyy-mm-dd):");
+     String[] startDateArray = scanner.next().split("-");
+     LocalDate startDate = LocalDate.of(Integer.parseInt(startDateArray[0]), Integer.parseInt(startDateArray[1]), Integer.parseInt(startDateArray[2]));
 
-        Scanner scanner = new Scanner(System.in);
+     System.out.println("Enter end date (yyyy-mm-dd):");
+     String[] endDateArray = scanner.next().split("-");
+     LocalDate endDate = LocalDate.of(Integer.parseInt(endDateArray[0]), Integer.parseInt(endDateArray[1]), Integer.parseInt(endDateArray[2]));
 
-        while (true) 
-        {
-            System.out.println("1. Search for available rooms");
-            System.out.println("2. Make a reservation");
-            System.out.println("3. View booking details");
-            System.out.println("4. Exit");
+     System.out.println("Enter budget:");
+     double budget = scanner.nextDouble();
 
-            int choice = scanner.nextInt();
+     iternary itinerary = new iternary(startDate, endDate, budget);
 
-            switch (choice) 
-            {
-                case 1:
-                    List<room> availableRooms = hotel.getAvailableRooms();
-                    System.out.println("Available rooms:");
-                    for (room room : availableRooms) {
-                        System.out.println("Room " + room.getRoomNumber() + " - " + room.getCategory());
-                    }
-                    break;
-                case 2:
-                    System.out.println("Enter room number:");
-                    int roomNumber = scanner.nextInt();
-                    System.out.println("Enter guest name:");
-                    String guestName = scanner.next();
-                    room room = findRoom(hotel, roomNumber);
-                    if (room != null && room.isAvailable()) {
-                        hotel.makeReservation(room, guestName);
-                        System.out.println("Reservation made successfully!");
-                    } else {
-                        System.out.println("Room not available or does not exist.");
-                    }
-                    break;
-                case 3:
-                    List<booking> bookings = hotel.getBookings();
-                    System.out.println("Bookings:");
-                    for (booking booking : bookings) {
-                        System.out.println("Room " + booking.getRoom().getRoomNumber() + " - " + booking.getGuestName());
-                    }
-                    break;
-                case 4:
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        }
-    }
+     while (true) {
+         System.out.println("1. Add destination");
+         System.out.println("2. View itinerary");
+         System.out.println("3. Get weather information");
+         System.out.println("4. Calculate budget");
+         System.out.println("5. Exit");
 
-    private static room findRoom(hotel hotel, int roomNumber) 
-    {
-        for (room room : hotel.rooms) 
-        {
-            if (room.getRoomNumber() == roomNumber) 
-            {
-                return room;
-            }
-        }
-        return null;
-    }
+         int choice = scanner.nextInt();
+
+         switch (choice) {
+             case 1:
+                 System.out.println("Enter destination name:");
+                 String name = scanner.next();
+                 System.out.println("Enter destination location:");
+                 String location = scanner.next();
+                 System.out.println("Enter latitude:");
+                 double latitude = scanner.nextDouble();
+                 System.out.println("Enter longitude:");
+                 double longitude = scanner.nextDouble();
+
+                 destination destination = new destination(name, location, latitude, longitude);
+                 itinerary.addDestination(destination);
+                 break;
+             case 2:
+                 System.out.println("Itinerary:");
+                 for (destination destination1 : itinerary.getDestinations()) {
+                     System.out.println("Destination: " + destination1.getName());
+                     System.out.println("Location: " + destination1.getLocation());
+                     System.out.println("Latitude: " + destination1.getLatitude());
+                     System.out.println("Longitude: " + destination1.getLongitude());
+                 }
+                 break;
+             case 3:
+                 System.out.println("Enter destination name:");
+                 String destinationName = scanner.next();
+                 for (destination destination1 : itinerary.getDestinations()) {
+                     if (destination1.getName().equals(destinationName)) {
+                         // Simulating weather information
+                         weather weather = new weather("Sunny", 25.0);
+                         System.out.println("Weather condition: " + weather.getCondition());
+                         System.out.println("Temperature: " + weather.getTemperature());
+                     }
+                 }
+                 break;
+             case 4:
+                 System.out.println("Budget: " + itinerary.getBudget());
+                 break;
+             case 5:
+                 System.exit(0);
+                 break;
+             default:
+                 System.out.println("Invalid choice. Please try again.");
+         }
+     }
+ }
 }
